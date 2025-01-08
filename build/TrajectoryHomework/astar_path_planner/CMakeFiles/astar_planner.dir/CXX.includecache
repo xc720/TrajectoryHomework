@@ -6,6 +6,16 @@
 
 #IncludeRegexTransform: 
 
+/home/xuancai/catkin_ws/src/TrajectoryHomework/astar_path_planner/src/BSplineTrajectory.cpp
+vector
+-
+Eigen/Dense
+-
+stdexcept
+-
+cmath
+-
+
 /home/xuancai/catkin_ws/src/TrajectoryHomework/astar_path_planner/src/Trajectory.cpp
 iostream
 -
@@ -21,7 +31,13 @@ stdexcept
 /home/xuancai/catkin_ws/src/TrajectoryHomework/astar_path_planner/src/astar_planner.cpp
 ros/ros.h
 -
-utility
+visualization_msgs/MarkerArray.h
+-
+nav_msgs/Path.h
+-
+geometry_msgs/PoseStamped.h
+-
+Eigen/Dense
 -
 vector
 -
@@ -29,16 +45,16 @@ queue
 -
 cmath
 -
-Eigen/Dense
+iostream
 -
-visualization_msgs/MarkerArray.h
-/home/xuancai/catkin_ws/src/TrajectoryHomework/astar_path_planner/src/visualization_msgs/MarkerArray.h
-geometry_msgs/Point.h
+algorithm
 -
-nav_msgs/Path.h
-/home/xuancai/catkin_ws/src/TrajectoryHomework/astar_path_planner/src/nav_msgs/Path.h
 Trajectory.cpp
 /home/xuancai/catkin_ws/src/TrajectoryHomework/astar_path_planner/src/Trajectory.cpp
+BSplineTrajectory.cpp
+/home/xuancai/catkin_ws/src/TrajectoryHomework/astar_path_planner/src/BSplineTrajectory.cpp
+chrono
+-
 
 /opt/ros/noetic/include/geometry_msgs/Point.h
 string
