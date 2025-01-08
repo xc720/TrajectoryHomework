@@ -1,0 +1,2 @@
+TrajectoryHomework/astar_path_planner
+-DCATKIN_DEVEL_PREFIX=/home/xuancai/catkin_ws/devel -DCMAKE_INSTALL_PREFIX=/home/xuancai/catkin_ws/install -G Unix Makefiles
