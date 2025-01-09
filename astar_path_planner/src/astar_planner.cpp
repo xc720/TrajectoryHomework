@@ -26,7 +26,7 @@ struct Node {
         return g_cost + h_cost;
     } // 总代价值
 };
-
+// 比较器，用于优先队列
 struct cmp {
     bool operator()(std::shared_ptr<Node> a, std::shared_ptr<Node> b) {
         return a->f() > b->f();
@@ -38,7 +38,7 @@ struct GridMap {
     int height;
     double map_min;
     double map_max;
-    double grid_resolution;            // 分辨率
+    double grid_resolution;
     std::vector<std::vector<int>> grid; // 0: 空闲, 1: 障碍物
 
     GridMap(int w, int h, double map_min_, double map_max_, double res)
@@ -94,19 +94,18 @@ public:
         std::cout << "num of obstacles: " << num_of_obs_ << std::endl;
     }
 
-    // A* 主函数
+
     std::vector<Eigen::Vector2d> findPath(const Eigen::Vector2d& start,
                                           const Eigen::Vector2d& goal) {
-        // 如果地图中没有障碍物，则直接返回空
         if (num_of_obs_ == 0) {
             std::cerr << "[AStar] No obstacles in map, skip searching.\n";
             return {};
         }
-
+        // 起点和终点转换为网格坐标
         auto gridStart = worldToGrid(start);
         auto gridGoal  = worldToGrid(goal);
 
-        // 开放列表(优先队列)和闭集
+        // 开放列表和关闭列表
         std::priority_queue<std::shared_ptr<Node>,
                             std::vector<std::shared_ptr<Node>>,
                             cmp> open_list;
@@ -217,21 +216,37 @@ private:
                          std::pow(from.second - to.second, 2));
     }
 
-    // 计算节点间距离（支持八连通）
+    // 计算两节点之间的距离（用于邻居代价计算）
     double distance(const Node& a, const Node& b) const {
         return std::sqrt(std::pow(a.x - b.x, 2) +
                          std::pow(a.y - b.y, 2));
     }
 
-    // 获取当前节点的所有邻居节点（八连通）
+    // 从世界坐标转换到栅格坐标
+    std::pair<int, int> worldToGrid(const Eigen::Vector2d& position) {
+        int x = std::round((position.x() - map_min_) / grid_resolution_);
+        int y = std::round((position.y() - map_min_) / grid_resolution_);
+        return {x, y};
+    }
+
+    // 从栅格坐标转换到世界坐标（主要用于路径结果显示）
+    Eigen::Vector2d gridToWorld(int x, int y) {
+        double wx = x * grid_resolution_ + map_min_;
+        double wy = y * grid_resolution_ + map_min_;
+        return Eigen::Vector2d(wx, wy);
+    }
+
+    // 获取当前节点的所有邻居节点
     std::vector<Node> getNeighbors(const Node& current) const {
         std::vector<Node> neighbors;
+
+         // 八连通邻居
         static std::vector<std::pair<int,int>> directions = {
             {1, 0}, {0, 1}, {-1, 0}, {0, -1},
             {1, 1}, {1, -1}, {-1, 1}, {-1, -1}
         };
-
-        for (auto& dir : directions) {
+            // Step 2: 根据当前节点和方向计算邻居节点的坐标，并将其加入 neighbors
+        for (const auto& dir : directions) {
             int nx = current.x + dir.first;
             int ny = current.y + dir.second;
             if (inMapRange(nx, ny)) {
